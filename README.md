@@ -1,4 +1,5 @@
 In "command prompt" type: pip instal selenium ; pip instal flask
+
 Since you have your own website, you need to host your Flask app on your server and connect it to your domain. Here’s how you can do it:
 ------------------------------------------------------------------------------------------------------------------------------------------
 1. Check Your Hosting Type

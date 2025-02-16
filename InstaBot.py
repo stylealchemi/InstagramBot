@@ -99,7 +99,7 @@ class InstagramDM:
         """Closes the browser session."""
         self.browser.quit()
 
-# Flask Routes for Railway.app Integration
+# Flask Routes for Render.com Integration
 @app.route("/send_message", methods=["POST"])
 def send_message_api():
     data = request.json
@@ -117,4 +117,5 @@ def send_message_api():
     return jsonify({"status": "Message sent successfully"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 10000))  # Render.com auto-assigns a port
+    app.run(host="0.0.0.0", port=port)

@@ -1,11 +1,15 @@
+import chromedriver_autoinstaller
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
-import chromedriver_autoinstaller
+import shutil
+
 
 def start_automation(data):
     username = data['username']
@@ -14,14 +18,22 @@ def start_automation(data):
     message1 = data['message1']
     message2 = data['message2']
 
+    # Install ChromeDriver
     chromedriver_autoinstaller.install()
 
-    options = webdriver.ChromeOptions()
+    # Find Chromium executable
+    chrome_path = shutil.which("chromium-browser") or shutil.which("google-chrome")
+
+    options = Options()
+    options.binary_location = chrome_path  # Use Chromium binary
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-blink-features=AutomationControlled")  # Avoid detection
 
-    driver = webdriver.Chrome(options=options)
+    # Initialize WebDriver
+    driver = webdriver.Chrome(service=Service(), options=options)
 
     try:
         driver.get('https://www.instagram.com/accounts/login/')

@@ -1,0 +1,13 @@
+services:
+  - name: instagram-bot
+    type: web
+    env: python
+    region: oregon
+    buildCommand: |
+      sudo apt update
+      sudo apt install -y google-chrome-stable
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PORT
+        value: 10000

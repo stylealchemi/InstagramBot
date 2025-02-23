@@ -1,5 +1,4 @@
 flask
 selenium
 chromedriver-autoinstaller
-webdriver-manager
 gunicorn

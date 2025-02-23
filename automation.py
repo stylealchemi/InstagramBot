@@ -26,7 +26,7 @@ def start_automation(data):
     if not chrome_path:
         raise ValueError("Chromium browser not found. Ensure it's installed and available on PATH.")
 
-    # Set Chrome options
+    # Chrome options
     options = Options()
     options.binary_location = chrome_path
     options.add_argument("--headless")

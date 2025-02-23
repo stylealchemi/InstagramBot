@@ -17,20 +17,20 @@ def start_automation(data):
     message1 = data['message1']
     message2 = data['message2']
 
-    # Define Chrome and ChromeDriver paths manually
+    # Set explicit paths for Chrome and ChromeDriver
     chrome_path = "/usr/bin/chromium-browser"
     chromedriver_path = "/usr/bin/chromedriver"
 
     # Chrome options
     options = Options()
     options.binary_location = chrome_path
-    options.add_argument("--headless")
+    options.add_argument("--headless")  # Run without GUI
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    # Initialize WebDriver using explicit paths
+    # Initialize WebDriver
     driver = webdriver.Chrome(service=Service(executable_path=chromedriver_path), options=options)
 
     try:

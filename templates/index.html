@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Message Automation</title>
+    <meta charset="UTF-8">
+    <title>Instagram Message Automation</title>
 </head>
 <body>
-    <h1>Message Automation</h1>
+    <h1>Instagram Message Automation</h1>
     <form id="automationForm">
-        <input type="text" id="username" placeholder="Instagram Username"><br>
-        <input type="password" id="password" placeholder="Instagram Password"><br>
-        <textarea id="accounts" placeholder="Instagram Accounts List"></textarea><br>
-        <textarea id="message1" placeholder="Message Number 1"></textarea><br>
-        <textarea id="message2" placeholder="Message Number 2 (Reply)"></textarea><br>
+        <input type="text" id="username" placeholder="Instagram Username" required><br>
+        <input type="password" id="password" placeholder="Instagram Password" required><br>
+        <textarea id="accounts" placeholder="Instagram Accounts List (one per line)" required></textarea><br>
+        <textarea id="message1" placeholder="First Message" required></textarea><br>
+        <textarea id="message2" placeholder="Reply Message" required></textarea><br>
         <button type="submit">Start Automation</button>
     </form>
+
     <script>
         document.getElementById('automationForm').onsubmit = async function(e) {
             e.preventDefault();

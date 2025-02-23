@@ -1,60 +1,62 @@
-
-import os
-from flask import Flask, render_template, request
-from selenium import webdriver
-import chromedriver_autoinstaller
+from flask import Flask, request, jsonify, render_template
 import time
+import threading
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 app = Flask(__name__)
 
-# Automatically download ChromeDriver
-chromedriver_autoinstaller.install()
-
-# Set Chrome options
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = "/usr/bin/google-chrome"
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-@app.route('/start-bot', methods=['POST'])
-def start_bot():
-    username = request.form['username']
-    password = request.form['password']
-    accounts = request.form['accounts'].split(',')
-    first_message = request.form['first_message']
-    second_message = request.form['second_message']
+@app.route('/start', methods=['POST'])
+def start_automation():
+    data = request.json
+    threading.Thread(target=run_bot, args=(data,)).start()
+    return jsonify({"message": "Automation started!"})
 
-    driver = webdriver.Chrome(options=chrome_options)
+def run_bot(data):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(options=options)
 
     try:
-        driver.get("https://www.instagram.com")
-        time.sleep(3)
-        driver.find_element('name', 'username').send_keys(username)
-        driver.find_element('name', 'password').send_keys(password)
-        driver.find_element('xpath', '//button[@type="submit"]').click()
+        driver.get('https://www.instagram.com/')
         time.sleep(5)
 
-        for account in accounts:
-            driver.get(f"https://www.instagram.com/{account.strip()}/")
-            time.sleep(3)
-            print(f"Sent first message to {account.strip()}")
-            time.sleep(20 * 60)
-            print(f"Sent second message to {account.strip()}")
+        # Login
+        driver.find_element(By.NAME, 'username').send_keys(data['username'])
+        driver.find_element(By.NAME, 'password').send_keys(data['password'], Keys.RETURN)
+        time.sleep(10)
 
-    except Exception as e:
-        print(f"Error: {e}")
+        # Send first message
+        accounts = data['accounts'].split(',')
+        for account in accounts:
+            driver.get(f'https://www.instagram.com/{account.strip()}/')
+            time.sleep(5)
+            driver.find_element(By.CSS_SELECTOR, 'button[type="button"]').click()
+            time.sleep(3)
+            driver.find_element(By.TAG_NAME, 'textarea').send_keys(data['message1'], Keys.RETURN)
+            time.sleep(10)
+
+        # Wait 20-30 minutes
+        time.sleep(60 * 20)
+
+        # Send second message
+        for account in accounts:
+            driver.get(f'https://www.instagram.com/{account.strip()}/')
+            time.sleep(5)
+            driver.find_element(By.CSS_SELECTOR, 'button[type="button"]').click()
+            time.sleep(3)
+            driver.find_element(By.TAG_NAME, 'textarea').send_keys(data['message2'], Keys.RETURN)
+            time.sleep(10)
 
     finally:
         driver.quit()
 
-    return "Bot finished!"
-
 if __name__ == '__main__':
-app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host='0.0.0.0', port=10000, debug=True)

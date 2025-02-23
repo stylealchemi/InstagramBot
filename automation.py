@@ -8,7 +8,13 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
 import os
+import shutil
+import subprocess
 
+# Check if ChromeDriver exists
+print(subprocess.getoutput("which chromedriver"))
+print(subprocess.getoutput("ls -l /usr/bin/"))
+print(subprocess.getoutput("ls -l /usr/lib/chromium-browser/"))
 
 def start_automation(data):
     username = data['username']
@@ -17,9 +23,14 @@ def start_automation(data):
     message1 = data['message1']
     message2 = data['message2']
 
-    # Set explicit paths for Chrome and ChromeDriver
-    chrome_path = "/usr/bin/chromium-browser"
-    chromedriver_path = "/usr/lib/chromium-browser/chromedriver"
+    # Paths for Chromium and ChromeDriver
+    chrome_path = shutil.which("chromium-browser") or "/usr/bin/chromium-browser"
+    chromedriver_path = shutil.which("chromedriver") or "/usr/lib/chromium-browser/chromedriver"
+
+    if not chrome_path:
+        raise ValueError("Chromium browser not found. Ensure it's installed and available on PATH.")
+    if not chromedriver_path:
+        raise ValueError("ChromeDriver not found. Ensure it's installed and available on PATH.")
 
     # Chrome options
     options = Options()

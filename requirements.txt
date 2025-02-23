@@ -1,4 +1,0 @@
-flask
-selenium
-chromedriver-autoinstaller
-gunicorn

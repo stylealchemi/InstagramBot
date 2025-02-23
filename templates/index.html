@@ -71,3 +71,27 @@
     </script>
 </body>
 </html>
+<script>
+document.getElementById("start-btn").addEventListener("click", function() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let accounts = document.getElementById("accounts").value.split("\n"); // Convert to list
+    let message1 = document.getElementById("message1").value;
+    let message2 = document.getElementById("message2").value;
+
+    fetch("/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            accounts: accounts,
+            message1: message1,
+            message2: message2
+        })
+    })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => console.error("Error:", error));
+});
+</script>

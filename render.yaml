@@ -1,9 +1,7 @@
 services:
   - name: instagram-bot
     env: python
-    buildCommand: |
-      apt-get update && apt-get install -y chromium-browser chromium-driver wget unzip
-      pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: ./start.sh
     plan: free
     envVars:

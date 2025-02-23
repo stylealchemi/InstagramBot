@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Message Automation</title>
+</head>
+<body>
+    <h1>Message Automation</h1>
+    <form id="automationForm">
+        <input type="text" id="username" placeholder="Instagram Username"><br>
+        <input type="password" id="password" placeholder="Instagram Password"><br>
+        <textarea id="accounts" placeholder="Instagram Accounts List"></textarea><br>
+        <textarea id="message1" placeholder="Message Number 1"></textarea><br>
+        <textarea id="message2" placeholder="Message Number 2 (Reply)"></textarea><br>
+        <button type="submit">Start Automation</button>
+    </form>
+    <script>
+        document.getElementById('automationForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const response = await fetch('/start', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value,
+                    accounts: document.getElementById('accounts').value,
+                    message1: document.getElementById('message1').value,
+                    message2: document.getElementById('message2').value
+                })
+            });
+            const result = await response.json();
+            alert(result.status);
+        };
+    </script>
+</body>
+</html>

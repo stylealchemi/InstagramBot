@@ -1,8 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
+import chromedriver_autoinstaller
 
 def start_automation(data):
     username = data['username']
@@ -11,21 +14,38 @@ def start_automation(data):
     message1 = data['message1']
     message2 = data['message2']
 
-    driver = webdriver.Chrome()
-    driver.get('https://www.instagram.com')
-    time.sleep(5)
+    chromedriver_autoinstaller.install()
 
-    # Login
-    driver.find_element(By.NAME, 'username').send_keys(username)
-    driver.find_element(By.NAME, 'password').send_keys(password, Keys.RETURN)
-    time.sleep(5)
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
-    # Send messages
-    for account in accounts:
-        driver.get(f'https://www.instagram.com/{account}/')
-        time.sleep(random.randint(5, 10))
-        # Code to send message1, wait for reply, and send message2 after 20-30 min
-        # Simplified example
-        time.sleep(random.randint(1200, 1800))
+    driver = webdriver.Chrome(options=options)
 
-    driver.quit()
+    try:
+        driver.get('https://www.instagram.com/accounts/login/')
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, 'username')))
+        driver.find_element(By.NAME, 'username').send_keys(username)
+        driver.find_element(By.NAME, 'password').send_keys(password, Keys.RETURN)
+        WebDriverWait(driver, 10).until(EC.url_contains('/accounts/'))
+
+        for account in accounts:
+            driver.get(f'https://www.instagram.com/{account}/')
+            time.sleep(random.randint(5, 10))
+
+            message_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Message')]"))
+            )
+            message_button.click()
+
+            text_area = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.TAG_NAME, 'textarea'))
+            )
+            text_area.send_keys(message1, Keys.RETURN)
+
+            time.sleep(random.randint(1200, 1800))
+            text_area.send_keys(message2, Keys.RETURN)
+
+    finally:
+        driver.quit()

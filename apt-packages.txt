@@ -1,4 +1,0 @@
-chromium-browser
-chromium-driver
-wget
-unzip

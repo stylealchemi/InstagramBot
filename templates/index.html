@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Message Automation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Message Automation</h1>
+        <input type="text" id="username" placeholder="Instagram Username">
+        <input type="password" id="password" placeholder="Instagram Password">
+        <textarea id="accounts" placeholder="Instagram Accounts List (one per line)"></textarea>
+        <textarea id="message1" placeholder="Message Number 1"></textarea>
+        <textarea id="message2" placeholder="Message Number 2 (Reply after delay)"></textarea>
+        <button onclick="sendData()">Start Automation</button>
+    </div>
+
+    <script>
+        function sendData() {
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                accounts: document.getElementById('accounts').value.split('\n'),
+                message1: document.getElementById('message1').value,
+                message2: document.getElementById('message2').value
+            };
+            
+            fetch('/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

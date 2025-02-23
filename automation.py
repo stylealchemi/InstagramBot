@@ -5,16 +5,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import random
 import os
-import shutil
-import subprocess
 
-# Check if ChromeDriver exists
-print(subprocess.getoutput("which chromedriver"))
-print(subprocess.getoutput("ls -l /usr/bin/"))
-print(subprocess.getoutput("ls -l /usr/lib/chromium-browser/"))
 
 def start_automation(data):
     username = data['username']
@@ -23,26 +18,16 @@ def start_automation(data):
     message1 = data['message1']
     message2 = data['message2']
 
-    # Paths for Chromium and ChromeDriver
-    chrome_path = shutil.which("chromium-browser") or "/usr/bin/chromium-browser"
-    chromedriver_path = shutil.which("chromedriver") or "/usr/lib/chromium-browser/chromedriver"
-
-    if not chrome_path:
-        raise ValueError("Chromium browser not found. Ensure it's installed and available on PATH.")
-    if not chromedriver_path:
-        raise ValueError("ChromeDriver not found. Ensure it's installed and available on PATH.")
-
     # Chrome options
     options = Options()
-    options.binary_location = chrome_path
     options.add_argument("--headless")  # Run without GUI
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    # Initialize WebDriver
-    driver = webdriver.Chrome(service=Service(executable_path=chromedriver_path), options=options)
+    # Initialize WebDriver using WebDriverManager
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     try:
         driver.get('https://www.instagram.com/accounts/login/')

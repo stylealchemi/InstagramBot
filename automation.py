@@ -21,16 +21,19 @@ def start_automation(data):
     # Install ChromeDriver
     chromedriver_autoinstaller.install()
 
-    # Find Chromium executable
+    # Locate Chromium
     chrome_path = shutil.which("chromium-browser") or shutil.which("google-chrome")
+    if not chrome_path:
+        raise ValueError("Chromium browser not found. Ensure it's installed and available on PATH.")
 
+    # Set Chrome options
     options = Options()
-    options.binary_location = chrome_path  # Use Chromium binary
+    options.binary_location = chrome_path
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--disable-blink-features=AutomationControlled")  # Avoid detection
+    options.add_argument("--disable-blink-features=AutomationControlled")
 
     # Initialize WebDriver
     driver = webdriver.Chrome(service=Service(), options=options)

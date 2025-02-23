@@ -19,7 +19,7 @@ def start_automation(data):
 
     # Set explicit paths for Chrome and ChromeDriver
     chrome_path = "/usr/bin/chromium-browser"
-    chromedriver_path = "/usr/bin/chromedriver"
+    chromedriver_path = "/usr/lib/chromium-browser/chromedriver"
 
     # Chrome options
     options = Options()
